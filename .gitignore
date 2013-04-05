@@ -7,3 +7,8 @@
 /nytprof/
 /Build
 
+/SQL-TwoWay-*
+/.build
+/_build_params
+!Build/
+!META.json
