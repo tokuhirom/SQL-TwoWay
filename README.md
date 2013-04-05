@@ -59,6 +59,8 @@ So, you can use same SQL in MySQL console and Perl code. It means __2way SQL__.
 # SYNTAX
 
 - /\* $var \*/4
+- /\* $var \*/(1,2,3)
+- /\* $var \*/"String"
 
     Replace variables.
 
@@ -70,7 +72,8 @@ So, you can use same SQL in MySQL console and Perl code. It means __2way SQL__.
     if : /* IF $var */
     else : /* ELSE */
     end : /* END */
-    variable : /* $var */
+    variable : /* $var */ literal
+    literal: TBD
     sql : .
 
     root = ( stmt )+

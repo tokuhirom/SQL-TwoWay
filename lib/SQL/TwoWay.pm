@@ -2,7 +2,7 @@ package SQL::TwoWay;
 use strict;
 use warnings FATAL => 'recursion';
 use 5.010001; # Named capture
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 use Carp ();
 use Scalar::Util qw(reftype);
 
