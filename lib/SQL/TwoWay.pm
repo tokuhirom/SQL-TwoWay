@@ -143,7 +143,23 @@ sub tokenize_two_way_sql {
 
     my @ret;
     my $NUMERIC_LITERAL = "-? [0-9.]+";
-    my $STRING_LITERAL = q{"[^"]+"};
+    my $STRING_LITERAL = q{ (?:
+                                "
+                                    (?:
+                                        \"
+                                        | ""
+                                        | [^"]
+                                    )*
+                                "
+                                |
+                                '
+                                    (?:
+                                        \'
+                                        | ''
+                                        | [^']
+                                    )*
+                                '
+                            ) };
     my $LITERAL = "(?: $STRING_LITERAL | $NUMERIC_LITERAL )";
     $sql =~ s!
         # Variable /* $var */3

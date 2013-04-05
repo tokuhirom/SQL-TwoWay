@@ -35,6 +35,21 @@ subtest 'Simple replacement' => sub {
         q{SELECT * FROM foo WHERE boo=?}, ['Gah!']
     );
     match(
+        'Double quote string with escape',
+        q{SELECT * FROM foo WHERE boo=/* $b */"W""o\"W"}, { b => "Gah!" },
+        q{SELECT * FROM foo WHERE boo=?}, ['Gah!']
+    );
+    match(
+        'Single quote string',
+        q{SELECT * FROM foo WHERE boo=/* $b */'WoW'}, { b => "Gah!" },
+        q{SELECT * FROM foo WHERE boo=?}, ['Gah!']
+    );
+    match(
+        'Single quote string with escape',
+        q{SELECT * FROM foo WHERE boo=/* $b */'W''o\'W'}, { b => "Gah!" },
+        q{SELECT * FROM foo WHERE boo=?}, ['Gah!']
+    );
+    match(
         'String List',
         q{SELECT * FROM foo WHERE boo IN /* $b */("foo","bar")}, { b => ["Gah!", 'Bah!'] },
         q{SELECT * FROM foo WHERE boo IN (?,?)}, ['Gah!', 'Bah!']
