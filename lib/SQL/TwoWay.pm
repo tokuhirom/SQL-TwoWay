@@ -2,7 +2,7 @@ package SQL::TwoWay;
 use strict;
 use warnings FATAL => 'recursion';
 use 5.010001; # Named capture
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 use Carp ();
 
 use parent qw(Exporter);
@@ -69,21 +69,6 @@ sub process_two_way {
     }
     return ($sql, @binds);
 }
-
-=for bnf
-
-    if : /* IF $var */
-    else : /* ELSE */
-    end : /* END */
-    variable : /* $var */
-    sql : .
-
-    root = ( stmt )+
-    stmt = sql | variable | if_stmt
-    if_stmt = "IF" statement+ "ELSE" statement+ "END"
-            | "IF" statement+ "END"
-
-=cut
 
 sub parse_two_way {
     my ($tokens) = @_;
@@ -256,6 +241,33 @@ And C<< @binds >> is:
     ('STARTING OVER')
 
 So, you can use same SQL in MySQL console and Perl code. It means B<2way SQL>.
+
+=head1 SYNTAX
+
+=over 4
+
+=item /* $var */4
+
+Replace variables.
+
+=item /* IF $cond */n=3/* ELSE */n=5/* END */
+
+=item /* IF $cond */n=3/* END */
+
+=back
+
+=head1 PSEUDO BNF
+
+    if : /* IF $var */
+    else : /* ELSE */
+    end : /* END */
+    variable : /* $var */
+    sql : .
+
+    root = ( stmt )+
+    stmt = sql | variable | if_stmt
+    if_stmt = "IF" statement+ "ELSE" statement+ "END"
+            | "IF" statement+ "END"
 
 =head1 LICENSE
 

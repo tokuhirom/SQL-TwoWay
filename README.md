@@ -1,14 +1,3 @@
-    if : /* IF $var */
-    else : /* ELSE */
-    end : /* END */
-    variable : /* $var */
-    sql : .
-
-    root = ( stmt )+
-    stmt = sql | variable | if_stmt
-    if_stmt = "IF" statement+ "ELSE" statement+ "END"
-            | "IF" statement+ "END"
-
 # NAME
 
 SQL::TwoWay - Run same SQL in valid SQL and DBI placeholder.
@@ -66,6 +55,28 @@ And `@binds` is:
     ('STARTING OVER')
 
 So, you can use same SQL in MySQL console and Perl code. It means __2way SQL__.
+
+# SYNTAX
+
+- /\* $var \*/4
+
+    Replace variables.
+
+- /\* IF $cond \*/n=3/\* ELSE \*/n=5/\* END \*/
+- /\* IF $cond \*/n=3/\* END \*/
+
+# PSEUDO BNF
+
+    if : /* IF $var */
+    else : /* ELSE */
+    end : /* END */
+    variable : /* $var */
+    sql : .
+
+    root = ( stmt )+
+    stmt = sql | variable | if_stmt
+    if_stmt = "IF" statement+ "ELSE" statement+ "END"
+            | "IF" statement+ "END"
 
 # LICENSE
 

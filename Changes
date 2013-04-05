@@ -2,6 +2,10 @@ Revision history for Perl extension SQL-TwoWay
 
 {{$NEXT}}
 
+0.02 2013-04-05T07:27:02Z
+
+    - Tiny pod fix(tokuhirom)
+
 0.01 2013-04-05T07:22:15Z
 
     - original version
