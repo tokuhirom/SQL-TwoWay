@@ -7,7 +7,7 @@ SQL::TwoWay - Run same SQL in valid SQL and DBI placeholder.
     use SQL::TwoWay;
 
     my $name = 'STARTING OVER';
-    my ($sql, @binds) = two_way(
+    my ($sql, @binds) = two_way_sql(
         q{SELECT *
         FROM cd
         WHERE name=/* $name */"MASTERPIECE"}, {
@@ -35,11 +35,11 @@ You can write a query like this.
 
 This query is 100% valid SQL.
 
-And you can make `<$sql`\> and `<@binds`\> from this query. `SQL::TwoWay::two_way()` function convert this query.
+And you can make `<$sql`\> and `<@binds`\> from this query. `SQL::TwoWay::two_way_sql()` function convert this query.
 
 Here is a example code:
 
-    my ($sql, @binds) = two_way(
+    my ($sql, @binds) = two_way_sql(
         q{SELECT * FROM cd WHERE name=/* $name */"MASTERPIECE"},
         {
             name => 'STARTING OVER'

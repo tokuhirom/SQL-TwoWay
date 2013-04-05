@@ -12,8 +12,8 @@ sub END_     () { SQL::TwoWay::END_     }
 sub ELSE     () { SQL::TwoWay::ELSE     }
 
 sub parse {
-    my $tokens = SQL::TwoWay::tokenize_two_way($_[0]);
-    my $ast = SQL::TwoWay::parse_two_way($tokens);
+    my $tokens = SQL::TwoWay::tokenize_two_way_sql($_[0]);
+    my $ast = SQL::TwoWay::parse_two_way_sql($tokens);
     return $ast;
 }
 

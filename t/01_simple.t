@@ -65,7 +65,7 @@ sub match {
     my ($name, $sql, $params, $expected_sql, $expected_binds) = @_;
 
     subtest $name => sub {
-        my ($sql, @binds) = two_way($sql, $params);
+        my ($sql, @binds) = two_way_sql($sql, $params);
         is($sql, $expected_sql);
         is(0+@binds, 0+@$expected_binds);
         for (0..@$expected_binds-1) {

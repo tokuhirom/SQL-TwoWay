@@ -10,7 +10,7 @@ sub IF       () { SQL::TwoWay::IF       }
 sub END_     () { SQL::TwoWay::END_     }
 sub ELSE     () { SQL::TwoWay::ELSE     }
 
-sub tokenize { SQL::TwoWay::tokenize_two_way(@_) }
+sub tokenize { SQL::TwoWay::tokenize_two_way_sql(@_) }
 
 ok SQL;
 ok VARIABLE;

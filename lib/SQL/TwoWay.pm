@@ -7,7 +7,7 @@ use Carp ();
 
 use parent qw(Exporter);
 
-our @EXPORT = qw(two_way);
+our @EXPORT = qw(two_way_sql);
 
 our ($TOKEN_STR2ID, $TOKEN_ID2STR);
 BEGIN {
@@ -26,16 +26,16 @@ sub token2str {
     $TOKEN_ID2STR->{+shift}
 }
 
-sub two_way {
+sub two_way_sql {
     my ($sql, $params) = @_;
 
-    my $tokens = tokenize_two_way($sql);
-    my $ast = parse_two_way($tokens);
-    my ($sql, @binds) = process_two_way($ast, $params);
+    my $tokens = tokenize_two_way_sql($sql);
+    my $ast = parse_two_way_sql($tokens);
+    my ($sql, @binds) = process_two_way_sql($ast, $params);
     return ($sql, @binds);
 }
 
-sub process_two_way {
+sub process_two_way_sql {
     my ($ast, $params) = @_;
     my ($sql, @binds);
     for my $node (@$ast) {
@@ -45,11 +45,11 @@ sub process_two_way {
                 Carp::croak("Unknown parameter for IF stmt: $name");
             }
             if ($params->{$name}) {
-                my ($is, @ib) = process_two_way($node->[2], $params);
+                my ($is, @ib) = process_two_way_sql($node->[2], $params);
                 $sql .= $is;
                 push @binds, @ib;
             } else {
-                my ($is, @ib) = process_two_way($node->[3], $params);
+                my ($is, @ib) = process_two_way_sql($node->[3], $params);
                 $sql .= $is;
                 push @binds, @ib;
             }
@@ -70,7 +70,7 @@ sub process_two_way {
     return ($sql, @binds);
 }
 
-sub parse_two_way {
+sub parse_two_way_sql {
     my ($tokens) = @_;
     my @ast;
     while (@$tokens > 0) {
@@ -132,7 +132,7 @@ sub _parse_if_stmt {
     ];
 }
 
-sub tokenize_two_way {
+sub tokenize_two_way_sql {
     my $sql = shift;
 
     my @ret;
@@ -193,7 +193,7 @@ SQL::TwoWay - Run same SQL in valid SQL and DBI placeholder.
     use SQL::TwoWay;
 
     my $name = 'STARTING OVER';
-    my ($sql, @binds) = two_way(
+    my ($sql, @binds) = two_way_sql(
         q{SELECT *
         FROM cd
         WHERE name=/* $name */"MASTERPIECE"}, {
@@ -221,11 +221,11 @@ You can write a query like this.
 
 This query is 100% valid SQL.
 
-And you can make C<<$sql>> and C<<@binds>> from this query. C<< SQL::TwoWay::two_way() >> function convert this query.
+And you can make C<<$sql>> and C<<@binds>> from this query. C<< SQL::TwoWay::two_way_sql() >> function convert this query.
 
 Here is a example code:
 
-    my ($sql, @binds) = two_way(
+    my ($sql, @binds) = two_way_sql(
         q{SELECT * FROM cd WHERE name=/* $name */"MASTERPIECE"},
         {
             name => 'STARTING OVER'
