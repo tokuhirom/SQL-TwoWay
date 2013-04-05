@@ -36,6 +36,29 @@ subtest 'Simple replacement' => sub {
     );
 };
 
+subtest 'IF statement' => sub {
+    match(
+        'Simple, true',
+        q{SELECT * FROM foo /* IF $cond */WHERE 1=1/* END */}, { cond => 1 },
+        q{SELECT * FROM foo WHERE 1=1}, [],
+    );
+    match(
+        'Simple, false',
+        q{SELECT * FROM foo /* IF $cond */WHERE 1=1/* END */}, { cond => 0 },
+        q{SELECT * FROM foo }, [],
+    );
+    match(
+        'IF-ELSE, true',
+        q{SELECT * FROM foo WHERE /* IF $cond */b=/* $b */5/* ELSE */c=/* $c */7/* END */}, { cond => 1, b => 3, c => 8 },
+        q{SELECT * FROM foo WHERE b=?}, [3],
+    );
+    match(
+        'IF-ELSE, false',
+        q{SELECT * FROM foo WHERE /* IF $cond */b=/* $b */5/* ELSE */c=/* $c */7/* END */}, { cond => 0, b => 3, c => 8 },
+        q{SELECT * FROM foo WHERE c=?}, [8],
+    );
+};
+
 done_testing;
 
 sub match {
