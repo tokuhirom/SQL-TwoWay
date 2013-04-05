@@ -22,13 +22,6 @@ BEGIN {
 }
 use constant $TOKEN_STR2ID;
 
-sub new {
-    my $class = shift;
-    bless {
-        ast => undef,
-    }, $class;
-}
-
 sub token2str {
     $TOKEN_ID2STR->{+shift}
 }
@@ -208,15 +201,61 @@ __END__
 
 =head1 NAME
 
-SQL::TwoWay - It's new $module
+SQL::TwoWay - Run same SQL in valid SQL and DBI placeholder.
 
 =head1 SYNOPSIS
 
     use SQL::TwoWay;
 
+    my $name = 'STARTING OVER';
+    my ($sql, @binds) = two_way(
+        q{SELECT *
+        FROM cd
+        WHERE name=/* $name */"MASTERPIECE"}, {
+        name => $name,
+    });
+
+    # $sql: SELECT * FROM cd WHERE name=?
+    # $binds[0] = 'STARTING OVER'
+
 =head1 DESCRIPTION
 
-SQL::TwoWay is ...
+SQL::TwoWay is a way to support 2way SQL.
+
+I guess building complex SQL using O/R Mapper or SQL builder, like SQL::Abstract is worth.
+When you writing complex SQL, you should write SQL by your hand.
+
+And then, you got a issue: "I can't run my query on MySQL console!". Yes.
+A query like "SELECT * FROM cd WHERE name=?" is not runnable on console because that contains placeholder.
+
+So, the solution is SQL::TwoWay.
+
+You can write a query like this.
+
+    SELECT * FROM cd WHERE name=/* $name */"MASTERPIECE";
+
+This query is 100% valid SQL.
+
+And you can make C<<$sql>> and C<<@binds>> from this query. C<< SQL::TwoWay::two_way() >> function convert this query.
+
+Here is a example code:
+
+    my ($sql, @binds) = two_way(
+        q{SELECT * FROM cd WHERE name=/* $name */"MASTERPIECE"},
+        {
+            name => 'STARTING OVER'
+        }
+    );
+
+C<< $sql >> is:
+
+    SELECT * FROM cd WHERE name=?;
+
+And C<< @binds >> is:
+
+    ('STARTING OVER')
+
+So, you can use same SQL in MySQL console and Perl code. It means B<2way SQL>.
 
 =head1 LICENSE
 
@@ -228,4 +267,8 @@ it under the same terms as Perl itself.
 =head1 AUTHOR
 
 tokuhirom E<lt>tokuhirom@gmail.comE<gt>
+
+=head1 SEE ALSO
+
+L<s2dao|http://s2dao.seasar.org/en/index.html> supports 2 way SQL in Java.
 
