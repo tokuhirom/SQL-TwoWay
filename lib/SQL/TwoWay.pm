@@ -4,6 +4,7 @@ use warnings FATAL => 'recursion';
 use 5.010001; # Named capture
 our $VERSION = "0.02";
 use Carp ();
+use Scalar::Util qw(reftype);
 
 use parent qw(Exporter);
 
@@ -54,13 +55,18 @@ sub process_two_way_sql {
                 push @binds, @ib;
             }
         } elsif ($node->[0] eq VARIABLE) {
-            $sql .= '?';
             my $name = $node->[1];
             unless (exists $params->{$name}) {
                 Carp::croak("Unknown parameter: $name");
             }
 
-            push @binds, $params->{$name};
+            if (reftype($params->{$name}) eq 'ARRAY') {
+                $sql .= '('. join(',', ('?')x@{$params->{$name}}) .')';
+                push @binds, @{$params->{$name}};
+            } else {
+                $sql .= '?';
+                push @binds, $params->{$name};
+            }
         } elsif ($node->[0] eq SQL) {
             $sql .= $node->[1];
         } else {
@@ -136,11 +142,20 @@ sub tokenize_two_way_sql {
     my $sql = shift;
 
     my @ret;
+    my $NUMERIC_LITERAL = "-? [0-9.]+";
+    my $STRING_LITERAL = q{"[^"]+"};
+    my $LITERAL = "(?: $STRING_LITERAL | $NUMERIC_LITERAL )";
     $sql =~ s!
         # Variable /* $var */3
         (
             /\* \s+ \$ (?<variable> [A-Za-z0-9_-]+) \s+ \*/
-            (?: "[^"]+" | -? [0-9.]+ )
+            (?:
+                # (3,2,4)
+                $LITERAL | \(
+                    (?: \s* $LITERAL \s* , \s* )*
+                    $LITERAL
+                \)
+            )
         )
         |
         (?:
@@ -248,6 +263,10 @@ So, you can use same SQL in MySQL console and Perl code. It means B<2way SQL>.
 
 =item /* $var */4
 
+=item /* $var */(1,2,3)
+
+=item /* $var */"String"
+
 Replace variables.
 
 =item /* IF $cond */n=3/* ELSE */n=5/* END */
@@ -261,7 +280,8 @@ Replace variables.
     if : /* IF $var */
     else : /* ELSE */
     end : /* END */
-    variable : /* $var */
+    variable : /* $var */ literal
+    literal: TBD
     sql : .
 
     root = ( stmt )+

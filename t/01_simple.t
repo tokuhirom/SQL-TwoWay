@@ -34,6 +34,16 @@ subtest 'Simple replacement' => sub {
         q{SELECT * FROM foo WHERE boo=/* $b */"WoW"}, { b => "Gah!" },
         q{SELECT * FROM foo WHERE boo=?}, ['Gah!']
     );
+    match(
+        'String List',
+        q{SELECT * FROM foo WHERE boo IN /* $b */("foo","bar")}, { b => ["Gah!", 'Bah!'] },
+        q{SELECT * FROM foo WHERE boo IN (?,?)}, ['Gah!', 'Bah!']
+    );
+    match(
+        'Numeric List',
+        q{SELECT * FROM foo WHERE boo IN /* $b */(3 , 5)}, { b => [8,3,4] },
+        q{SELECT * FROM foo WHERE boo IN (?,?,?)}, [8,3,4]
+    );
 };
 
 subtest 'IF statement' => sub {
