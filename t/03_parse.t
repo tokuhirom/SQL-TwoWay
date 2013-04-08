@@ -19,6 +19,21 @@ sub parse {
 
 is_deeply(
     parse(
+        'SELECT * FROM foo /* IF $var */v=/* $var */3/* END */'
+    ),
+    [
+        [SQL, 'SELECT * FROM foo '],
+        [IF, 'var',
+             [[SQL, 'v='],
+            [VARIABLE, 'var']],
+            [],
+             ]
+    ],
+    'IF'
+);
+
+is_deeply(
+    parse(
         'SELECT * FROM foo /* IF $var */3/* END */'
     ),
     [

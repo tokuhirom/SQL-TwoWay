@@ -157,10 +157,11 @@ sub tokenize_two_way_sql {
                                         \'
                                         | ''
                                         | [^']
-                                    )*
+                                    )*?
                                 '
                             ) };
     my $LITERAL = "(?: $STRING_LITERAL | $NUMERIC_LITERAL )";
+    my $SINGLE_SLASH = '/ (?! \*)';
     $sql =~ s!
         # Variable /* $var */3
         (
@@ -190,7 +191,7 @@ sub tokenize_two_way_sql {
         (?<sql1> [^/]+ )
         |
         # Single slash character
-        (?<sql2> / )
+        (?<sql2> $SINGLE_SLASH )
     !
         if (defined $+{variable}) {
             push @ret, [VARIABLE, $+{variable}]
@@ -207,6 +208,7 @@ sub tokenize_two_way_sql {
         } else {
             Carp::croak("Invalid sql: $sql");
         }
+        ''
     !gex;
 
     return \@ret;

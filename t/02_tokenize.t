@@ -3,6 +3,7 @@ use warnings;
 use utf8;
 use Test::More;
 use SQL::TwoWay;
+use Test::Difflet qw(is_deeply);
 
 sub VARIABLE () { SQL::TwoWay::VARIABLE }
 sub SQL      () { SQL::TwoWay::SQL      }
@@ -14,6 +15,33 @@ sub tokenize { SQL::TwoWay::tokenize_two_way_sql(@_) }
 
 ok SQL;
 ok VARIABLE;
+
+is_deeply(
+    tokenize(
+       q{/* IF $f *//* $y */'2'/* END */'2'}
+    ),
+    [
+        [IF, 'f'],
+        [VARIABLE, 'y'],
+        [END_],
+        [SQL, q{'2'}],
+    ],
+    'error'
+);
+
+is_deeply(
+    tokenize(
+        'SELECT * FROM foo /* IF $var */v=/* $var */3/* END */'
+    ),
+    [
+        [SQL, 'SELECT * FROM foo '],
+        [IF, 'var'],
+        [SQL, 'v='],
+        [VARIABLE, 'var'],
+        [END_],
+    ],
+    'Simple'
+);
 
 is_deeply(
     tokenize(
