@@ -146,18 +146,18 @@ sub tokenize_two_way_sql {
     my $STRING_LITERAL = q{ (?:
                                 "
                                     (?:
-                                        \"
+                                        \\\\"
                                         | ""
                                         | [^"]
-                                    )*?
+                                    )*
                                 "
                                 |
                                 '
                                     (?:
-                                        \'
+                                        \\\\'
                                         | ''
                                         | [^']
-                                    )*?
+                                    )*
                                 '
                             ) };
     my $LITERAL = "(?: $STRING_LITERAL | $NUMERIC_LITERAL )";
