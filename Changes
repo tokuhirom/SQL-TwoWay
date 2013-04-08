@@ -2,6 +2,11 @@ Revision history for Perl extension SQL-TwoWay
 
 {{$NEXT}}
 
+0.04 2013-04-08T04:35:11Z
+
+    - Fixed string literal scanner.
+      (tokuhirom)
+
 0.03 2013-04-05T09:20:35Z
 
     - [INCOMPATIBLE CHANGE] s/two_way/two_way_sql/
