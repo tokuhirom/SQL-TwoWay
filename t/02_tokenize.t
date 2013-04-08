@@ -18,6 +18,19 @@ ok VARIABLE;
 
 is_deeply(
     tokenize(
+       q{/* IF $f *//* $y */"2"/* END */"2"}
+    ),
+    [
+        [IF, 'f'],
+        [VARIABLE, 'y'],
+        [END_],
+        [SQL, q{"2"}],
+    ],
+    'error'
+);
+
+is_deeply(
+    tokenize(
        q{/* IF $f *//* $y */'2'/* END */'2'}
     ),
     [
