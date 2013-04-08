@@ -89,7 +89,9 @@ done_testing;
 sub match {
     my ($name, $sql, $params, $expected_sql, $expected_binds) = @_;
 
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
     subtest $name => sub {
+        local $Test::Builder::Level = $Test::Builder::Level + 6;
         my ($sql, @binds) = two_way_sql($sql, $params);
         is($sql, $expected_sql);
         is(0+@binds, 0+@$expected_binds);
