@@ -129,7 +129,7 @@ sub _parse_if_stmt {
 
     # And, there is END_
     unless ($tokens->[0]->[0] eq END_) {
-        Carp::croak("Unexpected EOF");
+        Carp::croak("Unexpected EOF in IF statement");
     }
     shift @$tokens; # remove END_
 
