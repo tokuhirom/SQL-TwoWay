@@ -2,7 +2,7 @@ package SQL::TwoWay;
 use strict;
 use warnings FATAL => 'recursion';
 use 5.010001; # Named capture
-our $VERSION = "0.04";
+our $VERSION = "0.05";
 use Carp ();
 use Scalar::Util qw(reftype);
 
@@ -248,7 +248,7 @@ I guess building complex SQL using O/R Mapper or SQL builder, like SQL::Abstract
 When you writing complex SQL, you should write SQL by your hand.
 
 And then, you got a issue: "I can't run my query on MySQL console!". Yes.
-A query like "SELECT * FROM cd WHERE name=?" is not runnable on console because that contains placeholder.
+A query like C<< SELECT * FROM cd WHERE name=? >> is not runnable on console because that contains placeholder.
 
 So, the solution is SQL::TwoWay.
 
