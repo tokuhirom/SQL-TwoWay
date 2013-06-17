@@ -32,8 +32,8 @@ sub two_way_sql {
 
     my $tokens = tokenize_two_way_sql($sql);
     my $ast = parse_two_way_sql($tokens);
-    my ($sql, @binds) = process_two_way_sql($ast, $params);
-    return ($sql, @binds);
+    my ($generated_sql, @binds) = process_two_way_sql($ast, $params);
+    return ($generated_sql, @binds);
 }
 
 sub process_two_way_sql {
@@ -89,7 +89,11 @@ sub _parse_statements {
     my ($tokens) = @_;
 
     my @stmts;
-    while (@$tokens && $tokens->[0]->[0] ~~ [SQL, VARIABLE, IF]) {
+    while (@$tokens && (
+            $tokens->[0]->[0] == SQL
+        ||  $tokens->[0]->[0] == VARIABLE
+        ||  $tokens->[0]->[0] == IF
+    )) {
         push @stmts, _parse_stmt($tokens);
     }
     return \@stmts;
