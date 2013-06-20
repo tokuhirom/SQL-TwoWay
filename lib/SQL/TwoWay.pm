@@ -33,7 +33,7 @@ sub two_way_sql {
     my $tokens = tokenize_two_way_sql($sql);
     my $ast = parse_two_way_sql($tokens);
     my ($generated_sql, @binds) = process_two_way_sql($ast, $params);
-    return ($generated_sql, @binds);
+    return wantarray ? ($generated_sql, @binds) : $generated_sql;
 }
 
 sub process_two_way_sql {
