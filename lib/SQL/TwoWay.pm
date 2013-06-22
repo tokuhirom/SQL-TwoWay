@@ -33,7 +33,7 @@ sub two_way_sql {
     my $tokens = tokenize_two_way_sql($sql);
     my $ast = parse_two_way_sql($tokens);
     my ($generated_sql, @binds) = process_two_way_sql($ast, $params);
-    return ($generated_sql, @binds);
+    return wantarray ? ($generated_sql, @binds) : $generated_sql;
 }
 
 sub process_two_way_sql {
@@ -276,6 +276,15 @@ C<< $sql >> is:
 And C<< @binds >> is:
 
     ('STARTING OVER')
+
+If you don't need C<< @binds >> or want to build (more complex) bindings yourself, you can make only C<< $sql >> calling C<< SQL::TwoWay::two_way_sql() >> as scalar context, like this:
+
+    my $sql = two_way_sql(
+        q{SELECT * FROM cd /* IF $limit */LIMIT ?/* END */},
+        {
+            limit => 10
+        }
+    );
 
 So, you can use same SQL in MySQL console and Perl code. It means B<2way SQL>.
 
